@@ -74,4 +74,3 @@ class Trade(BaseModel):
 def add_trade(trades: list[Trade]):
     fake_trades.extend(trades)
     return {"status": "success", "data": fake_trades}
-
