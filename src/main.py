@@ -1,15 +1,9 @@
 from fastapi import FastAPI
-from fastapi_users import FastAPIUsers
 
-from auth.database import User
-from auth.auth import auth_backend
-from auth.manager import get_user_manager
-from auth.schemas import UserRead, UserCreate
+from src.auth.schemas import UserRead, UserCreate
+from src.auth.config import auth_backend, fastapi_users
 
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
+from src.operations.router import router as router_operation
 
 app = FastAPI(
     title="Trading App"
@@ -18,17 +12,21 @@ app = FastAPI(
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
-    tags=["auth"],
+    tags=["Auth"],
 )
 
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
-    tags=["auth"],
+    tags=["Auth"],
 )
 
 app.include_router(
     fastapi_users.get_verify_router(UserRead),
     prefix="/auth",
-    tags=["auth"],
+    tags=["Auth"],
+)
+
+app.include_router(
+    router_operation
 )
